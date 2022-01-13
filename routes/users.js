@@ -29,7 +29,7 @@ app.post('/', async (req, res) => {
   }
 })
 
-// Afficher toutes les voitures
+// Afficher tous les users
 app.get('/', async (req, res) => {
   try {
     const users = await User.find()
@@ -37,6 +37,53 @@ app.get('/', async (req, res) => {
       .exec()
 
     res.json(users)
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({ error: err })
+  }
+})
+
+// Afficher un user selon son id
+app.get('/:id', async (req, res) => {
+  const { id } = req.params
+
+  try {
+    const user = await User.findById(id)
+      // .populate('garage')
+      .exec()
+
+    res.json(user)
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({ error: err })
+  }
+})
+
+// Modifier un user
+app.put('/:id', async (req, res) => {
+  const { id } = req.params
+
+  try {
+    const user = await User.findOneAndUpdate(
+      { _id: id },
+      { ...req.body },
+      { new: true }
+    ).exec()
+
+    res.json(user)
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({ error: err })
+  }
+})
+
+// Effacer un user
+app.delete('/:id', async (req, res) => {
+  const { id } = req.params
+
+  try {
+    await User.deleteOne({ _id: id }).exec()
+    res.json({ success: 'User successfully deleted' })
   } catch (err) {
     console.log(err)
     res.status(500).json({ error: err })
