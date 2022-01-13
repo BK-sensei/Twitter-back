@@ -2,7 +2,7 @@ const mongoose = require("mongoose")
 
 const dbConnect = () => {
   const dbName = 'SuperTwitter'
-  const dbUrl = 'mongodb+srv://recjong:recjong@clustertwitter.is0on.mongodb.net/test'
+  const dbUrl = 'mongodb+srv://recjong:recjong@clustertwitter.is0on.mongodb.net/SuperTwitter'
 
   try {
     mongoose.connect(dbUrl)
