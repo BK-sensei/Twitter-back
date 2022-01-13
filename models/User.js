@@ -19,10 +19,10 @@ const UserSchema = Schema({
   bio: String,
   birthday: Date,
   location: String,
-  // followings: [{ type: Schema.Types.ObjectId, ref: "User" }],
-  // followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
-  // tweets: [{ type: Schema.Types.ObjectId, ref: "Tweet" }],
-  // retweets: [{ type: Schema.Types.ObjectId, ref: "Tweet" }],
+  followings: [{ type: Schema.Types.ObjectId, ref: "User" }],
+  followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
+  tweets: [{ type: Schema.Types.ObjectId, ref: "Tweet" }],
+  retweets: [{ type: Schema.Types.ObjectId, ref: "Tweet" }]
 },{
   timestamps: true
 })

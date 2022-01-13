@@ -49,7 +49,10 @@ app.get('/:id', async (req, res) => {
 
   try {
     const user = await User.findById(id)
-      // .populate('garage')
+      .populate('followers')
+      .populate('followings')
+      // .populate('tweets')
+      // .populate('retweets')
       .exec()
 
     res.json(user)

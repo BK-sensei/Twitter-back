@@ -1,7 +1,10 @@
 const { Schema, model } = require("mongoose")
 
 const TweetSchema = Schema({
-  user: String,
+  user: {
+		type: String,
+		// required: true
+	},
   pinnedTweet: Boolean,
   likes: Number,
   //retweets: [{ type: Schema.Types.ObjectId, ref: "User" }],
