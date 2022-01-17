@@ -12,3 +12,7 @@ const TweetSchema = Schema({
 },{
   timestamps: true
 })
+
+const Tweet = model('Tweet', TweetSchema)
+
+module.exports = Tweet

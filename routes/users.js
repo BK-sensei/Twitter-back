@@ -5,17 +5,12 @@ const User = require("../models/User")
 
 //créer un nouveau utilisateur
 app.post('/', async (req, res) => {
-  const { newUser } = req.body
 
   try {
     const user = await new User({ ...req.body })
     
     user.save(async (err, user) => {
       if (user) {
-      //   const getGarage = await Garage.findById(garage)
-      //   getGarage.users.push(newUser._id)
-      //   getGarage.save()
-
         res.json(user)
         return
       }
@@ -51,7 +46,7 @@ app.get('/:id', async (req, res) => {
     const user = await User.findById(id)
       .populate('followers')
       .populate('followings')
-      // .populate('tweets')
+      .populate('tweets')
       // .populate('retweets')
       .exec()
 
