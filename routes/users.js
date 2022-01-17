@@ -57,7 +57,7 @@ app.get('/:id', async (req, res) => {
   }
 })
 
-// Modifier un user
+// Modifier un user, follow/unfollow
 app.put('/:id', async (req, res) => {
   const { id } = req.params
 

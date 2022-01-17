@@ -30,4 +30,50 @@ app.post('/', async (req, res) => {
   }
 })
 
+// Afficher tous les tweets
+app.get('/', async (req, res) => {
+  try {
+    const tweets = await Tweet.find()
+      // .populate('garage')
+      .exec()
+
+    res.json(tweets)
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({ error: err })
+  }
+})
+
+//retweeter
+app.put('/:id', async (req, res) => {
+  const { id } = req.params
+
+  try {
+    const tweet = await Tweet.findOneAndUpdate(
+      { _id: id },
+      { ...req.body },
+      { new: true }
+    ).exec()
+
+    res.json(tweet)
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({ error: err })
+  }
+})
+
+// Effacer un tweet
+// app.delete('/:id', async (req, res) => {
+//   const { id } = req.params
+
+//   try {
+//     await Tweet.deleteOne({ _id: id }).exec()
+//     await User.tweets.deleteOne({ _id: id }).exec()
+//     res.json({ success: 'Tweet successfully deleted' })
+//   } catch (err) {
+//     console.log(err)
+//     res.status(500).json({ error: err })
+//   }
+// })
+
 module.exports = app
