@@ -5,9 +5,13 @@ const TweetSchema = Schema({
 		type: String,
 		// required: true
 	},
+  text: {
+		type: String,
+		// required: true
+	},
   pinnedTweet: Boolean,
   likes: Number,
-  //retweets: [{ type: Schema.Types.ObjectId, ref: "User" }],
+  retweets: [{ type: Schema.Types.ObjectId, ref: "User" }],
   //comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }]
 },{
   timestamps: true

@@ -60,7 +60,8 @@ app.get('/:id', verifyUser, async (req, res) => {
   }
 })
 
-// Modifier un user
+
+// Modifier un user, follow/unfollow
 app.put('/:id', verifyUser, UserExist, async (req, res) => {
   const { id } = req.params
 
