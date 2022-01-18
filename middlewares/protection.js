@@ -1,6 +1,6 @@
 const User = require("../models/User")
 
-const checkUserExist = (req, res, next) => {
+const checkUserExist = async (req, res, next) => {
     const { email, username } = req.body
 
     const user = await User.findOne({ username: username, email: email }).exec()
