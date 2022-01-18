@@ -4,8 +4,11 @@ const app = express()
 const Tweet = require("../models/Tweet")
 const User = require("../models/User")
 
-//créer un nouveau tweet
-app.post('/', async (req, res) => {
+const { verifyUser } = require("../middlewares/auth")
+const { checkUserId } = require("../middlewares/protection")
+
+// Créer un nouveau tweet
+app.post('/', verifyUser, checkUserId, async (req, res) => {
   const { user } = req.body
 
   try {
@@ -24,6 +27,43 @@ app.post('/', async (req, res) => {
       console.log(err)
       res.status(500).json({ error: err })
     })
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({ error: err })
+  }
+})
+
+// Afficher tous les tweets de Twitter
+app.get('/', async (req, res) => {
+  try {
+    const tweets = await Tweet.find()
+      // .populate('garage')
+      .exec()
+
+    res.json(tweets)
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({ error: err })
+  }
+})
+
+// Afficher tous les tweets d'un utilisateur
+app.get('/user/:id', async (req, res) => {
+
+})
+
+// Supprimer un tweet d'un utilisateur
+app.delete('/:tweet_id/', verifyUser, checkUserId, async (req, res) => {
+  const { tweet_id } = req.params
+  const { user } = req.body
+
+  try {
+    await Tweet.deleteOne({ _id: tweet_id }).exec()
+    await User.updateOne(
+      { _id: user }, 
+      { $pullAll: { tweets: [tweet_id] } }
+    ).exec()
+    res.json({ success: 'Tweet successfully deleted' })
   } catch (err) {
     console.log(err)
     res.status(500).json({ error: err })

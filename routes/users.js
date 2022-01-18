@@ -3,8 +3,11 @@ const app = express()
 
 const User = require("../models/User")
 
-//créer un nouveau utilisateur
-app.post('/', async (req, res) => {
+const { verifyUser } = require("../middlewares/auth")
+const { UserExist } = require("../middlewares/protection")
+
+// Se créer un compte un compte Twitter
+app.post('/', UserExist, async (req, res) => {
 
   try {
     const user = await new User({ ...req.body })
@@ -39,7 +42,7 @@ app.get('/', async (req, res) => {
 })
 
 // Afficher un user selon son id
-app.get('/:id', async (req, res) => {
+app.get('/:id', verifyUser, async (req, res) => {
   const { id } = req.params
 
   try {
@@ -58,7 +61,7 @@ app.get('/:id', async (req, res) => {
 })
 
 // Modifier un user
-app.put('/:id', async (req, res) => {
+app.put('/:id', verifyUser, UserExist, async (req, res) => {
   const { id } = req.params
 
   try {
@@ -76,7 +79,7 @@ app.put('/:id', async (req, res) => {
 })
 
 // Effacer un user
-app.delete('/:id', async (req, res) => {
+app.delete('/:id', verifyUser, async (req, res) => {
   const { id } = req.params
 
   try {
