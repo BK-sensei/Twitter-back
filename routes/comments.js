@@ -4,8 +4,11 @@ const app = express()
 const Comment = require("../models/Comments")
 const User = require("../models/User")
 
+const { verifyUser } = require("../middlewares/auth")
+const { checkUserExist } = require("../middlewares/protection")
+
 // Ecrire un commentaire sous un tweet
-app.post('/user/:id/tweet', async (req, res) => {
+app.post('/user/:id/tweet', verifyUser, checkUserExist, async (req, res) => {
     const { user } = req.body
 
     try{
@@ -31,7 +34,7 @@ app.post('/user/:id/tweet', async (req, res) => {
 })
 
 // Supprimer un commentaire
-app.delete('/user/:user_id/status/:status_id', async (req, res) => {
+app.delete('/user/:user_id/status/:status_id', verifyUser, checkUserExist, async (req, res) => {
     const { user_id, status_id } = req.params
 
     try {
