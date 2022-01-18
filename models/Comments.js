@@ -7,7 +7,7 @@ const CommentsSchema = Schema({
     },
     likes: {
         type: Number,
-        required: true,
+        // required: true,
     },
     user: {
         type: Schema.Types.ObjectId, 

@@ -22,7 +22,8 @@ const UserSchema = Schema({
   followings: [{ type: Schema.Types.ObjectId, ref: "User" }],
   followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
   tweets: [{ type: Schema.Types.ObjectId, ref: "Tweet" }],
-  retweets: [{ type: Schema.Types.ObjectId, ref: "Tweet" }]
+  retweets: [{ type: Schema.Types.ObjectId, ref: "Tweet" }],
+  comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }]
 },{
   timestamps: true
 })
