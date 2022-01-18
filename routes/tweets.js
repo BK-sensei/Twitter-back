@@ -4,8 +4,11 @@ const app = express()
 const Tweet = require("../models/Tweet")
 const User = require("../models/User")
 
-//créer un nouveau tweet
-app.post('/', async (req, res) => {
+const { verifyUser } = require("../middlewares/auth")
+const { checkUserId } = require("../middlewares/protection")
+
+// Créer un nouveau tweet
+app.post('/', verifyUser, checkUserId, async (req, res) => {
   const { user } = req.body
 
   try {
@@ -30,6 +33,7 @@ app.post('/', async (req, res) => {
   }
 })
 
+
 // Afficher tous les tweets
 app.get('/', async (req, res) => {
   try {
@@ -44,6 +48,25 @@ app.get('/', async (req, res) => {
   }
 })
 
+// Supprimer un tweet d'un utilisateur
+app.delete('/:tweet_id/', verifyUser, checkUserId, async (req, res) => {
+  const { tweet_id } = req.params
+  const { user } = req.body
+
+  try {
+    await Tweet.deleteOne({ _id: tweet_id }).exec()
+    await User.updateOne(
+      { _id: user }, 
+      { $pullAll: { tweets: [tweet_id] } }
+    ).exec()
+    res.json({ success: 'Tweet successfully deleted' })
+    } catch (err) {
+    console.log(err)
+    res.status(500).json({ error: err })
+  }
+})
+    
+    
 //retweeter
 app.put('/:id', async (req, res) => {
   const { id } = req.params
@@ -62,18 +85,5 @@ app.put('/:id', async (req, res) => {
   }
 })
 
-// Effacer un tweet
-// app.delete('/:id', async (req, res) => {
-//   const { id } = req.params
-
-//   try {
-//     await Tweet.deleteOne({ _id: id }).exec()
-//     await User.tweets.deleteOne({ _id: id }).exec()
-//     res.json({ success: 'Tweet successfully deleted' })
-//   } catch (err) {
-//     console.log(err)
-//     res.status(500).json({ error: err })
-//   }
-// })
 
 module.exports = app
