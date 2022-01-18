@@ -3,6 +3,7 @@ const app = express()
 
 const Comment = require("../models/Comments")
 const User = require("../models/User")
+const Tweet = require("../models/Tweet")
 
 const { verifyUser } = require("../middlewares/auth")
 const { checkUserId } = require("../middlewares/protection")
@@ -34,11 +35,20 @@ app.post('/user/:id/tweet', verifyUser, checkUserId, async (req, res) => {
 })
 
 // Supprimer un commentaire
-app.delete('/user/:user_id/status/:status_id', verifyUser, checkUserId,  async (req, res) => {
-    const { user_id, status_id } = req.params
+app.delete('/:status_id', verifyUser, checkUserId,  async (req, res) => {
+    const { status_id } = req.params
+    const { user } = req.body
 
     try {
-        await Comment.deleteOne({_id: status_id}).exec()
+        await Comment.deleteOne({ _id: status_id }).exec()
+        await Tweet.updateOne(
+            { _id: status_id }, 
+            { $pullAll: { tweets: [status_id] } }
+        ).exec()
+        await User.updateOne(
+            { _id: user }, 
+            { $pullAll: { tweets: [tweet_id] } }
+        ).exec()
         res.json({ success: 'Comment deleted' })
     } catch (err) {
         console.log(err)
