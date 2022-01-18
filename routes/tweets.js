@@ -33,7 +33,8 @@ app.post('/', verifyUser, checkUserId, async (req, res) => {
   }
 })
 
-// Afficher tous les tweets de Twitter
+
+// Afficher tous les tweets
 app.get('/', async (req, res) => {
   try {
     const tweets = await Tweet.find()
@@ -45,11 +46,6 @@ app.get('/', async (req, res) => {
     console.log(err)
     res.status(500).json({ error: err })
   }
-})
-
-// Afficher tous les tweets d'un utilisateur
-app.get('/user/:id', async (req, res) => {
-
 })
 
 // Supprimer un tweet d'un utilisateur
@@ -64,10 +60,29 @@ app.delete('/:tweet_id/', verifyUser, checkUserId, async (req, res) => {
       { $pullAll: { tweets: [tweet_id] } }
     ).exec()
     res.json({ success: 'Tweet successfully deleted' })
+    } catch (err) {
+    console.log(err)
+    res.status(500).json({ error: err })
+ }
+    
+    
+//retweeter
+app.put('/:id', async (req, res) => {
+  const { id } = req.params
+
+  try {
+    const tweet = await Tweet.findOneAndUpdate(
+      { _id: id },
+      { ...req.body },
+      { new: true }
+    ).exec()
+
+    res.json(tweet)
   } catch (err) {
     console.log(err)
     res.status(500).json({ error: err })
   }
 })
+
 
 module.exports = app
