@@ -2,6 +2,7 @@ const express = require("express")
 const app = express()
 
 const User = require("../models/User")
+const Tweet = require("../models/Tweet")
 
 const { verifyUser } = require("../middlewares/auth")
 const { UserExist } = require("../middlewares/protection")
@@ -31,7 +32,6 @@ app.post('/', UserExist, async (req, res) => {
 app.get('/', async (req, res) => {
   try {
     const users = await User.find()
-      // .populate('garage')
       .exec()
 
     res.json(users)
@@ -50,7 +50,7 @@ app.get('/:id', verifyUser, async (req, res) => {
       .populate('followers')
       .populate('followings')
       .populate('tweets')
-      // .populate('retweets')
+      .populate('retweets')
       .exec()
 
     res.json(user)
