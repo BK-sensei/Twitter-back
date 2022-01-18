@@ -33,7 +33,6 @@ app.post('/', verifyUser, checkUserId, async (req, res) => {
   }
 })
 
-
 // Afficher tous les tweets
 app.get('/', async (req, res) => {
   try {
@@ -67,7 +66,7 @@ app.delete('/:tweet_id/', verifyUser, checkUserId, async (req, res) => {
 })
     
     
-//retweeter
+// Retweeter
 app.put('/:id', async (req, res) => {
   const { id } = req.params
 
