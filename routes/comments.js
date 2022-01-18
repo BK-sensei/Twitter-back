@@ -9,17 +9,23 @@ const { verifyUser } = require("../middlewares/auth")
 const { checkUserId } = require("../middlewares/protection")
 
 // Ecrire un commentaire sous un tweet
-app.post('/user/:id/tweet', verifyUser, checkUserId, async (req, res) => {
-    const { user } = req.body
+app.post('/', verifyUser, checkUserId, async (req, res) => {
+    const { user, tweet } = req.body
 
     try{
         const comment = await new Comment({...req.body})
 
         comment.save(async (err, comment) => {
             if (comment) {
-                const getUser = await User.findById(user)
-                getUser.comments.push(comment._id)
-                getUser.save()
+                await User.updateOne(
+                    { _id: user },
+                    { $push: { comments: comment._id } }
+                )
+                
+                await Tweet.updateOne(
+                    { _id: tweet },
+                    { $push: { tweets: tweet._id}}
+                )
     
                 res.json(comment)
                 return
@@ -35,21 +41,25 @@ app.post('/user/:id/tweet', verifyUser, checkUserId, async (req, res) => {
 })
 
 // Supprimer un commentaire
-app.delete('/:status_id', verifyUser, checkUserId,  async (req, res) => {
-    const { status_id } = req.params
-    const { user } = req.body
+app.delete('/:comment_id', verifyUser, checkUserId,  async (req, res) => {
+    const { comment_id } = req.params
+    const { user, tweet } = req.body
 
     try {
-        await Comment.deleteOne({ _id: status_id }).exec()
+        await Comment.deleteOne({ _id: comment_id }).exec()
+
         await Tweet.updateOne(
-            { _id: status_id }, 
-            { $pullAll: { tweets: [status_id] } }
+            { _id: tweet }, 
+            { $pullAll: { comments: [comment_id] } }
         ).exec()
+
         await User.updateOne(
             { _id: user }, 
-            { $pullAll: { tweets: [tweet_id] } }
+            { $pullAll: { comments: [comment_id] } }
         ).exec()
+
         res.json({ success: 'Comment deleted' })
+
     } catch (err) {
         console.log(err)
         res.status(500).json({ error: err })
