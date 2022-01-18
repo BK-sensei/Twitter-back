@@ -42,7 +42,7 @@ app.get('/', async (req, res) => {
 })
 
 // Afficher un user selon son id
-app.get('/:id', verifyUser, async (req, res) => {
+app.get('/:id', async (req, res) => {
   const { id } = req.params
 
   try {
@@ -61,7 +61,7 @@ app.get('/:id', verifyUser, async (req, res) => {
 })
 
 
-// Modifier un user, follow/unfollow
+// Modifier un user : MAJ bio, pp, bday, location, follow/unfollow, website
 app.put('/:id', verifyUser, UserExist, async (req, res) => {
   const { id } = req.params
 

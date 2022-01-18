@@ -20,6 +20,7 @@ const UserSchema = Schema({
   bio: String,
   birthday: Date,
   location: String,
+  website: String,
   followings: [{ type: Schema.Types.ObjectId, ref: "User" }],
   followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
   tweets: [{ type: Schema.Types.ObjectId, ref: "Tweet" }],
