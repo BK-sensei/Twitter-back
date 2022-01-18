@@ -63,7 +63,8 @@ app.delete('/:tweet_id/', verifyUser, checkUserId, async (req, res) => {
     } catch (err) {
     console.log(err)
     res.status(500).json({ error: err })
- }
+  }
+})
     
     
 //retweeter
