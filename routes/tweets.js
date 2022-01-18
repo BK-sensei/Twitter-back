@@ -50,7 +50,8 @@ app.get('/', async (req, res) => {
 
 // Supprimer un tweet d'un utilisateur
 app.delete('/:tweet_id/', verifyUser, checkUserId, async (req, res) => {
-  c
+  const { tweet_id } = req.params
+  const { user } = req.body
 
   try {
     await Tweet.deleteOne({ _id: tweet_id }).exec()
