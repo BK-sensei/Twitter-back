@@ -3,9 +3,11 @@ const app = express()
 
 const Tweet = require("../models/Tweet")
 const User = require("../models/User")
+const Comment = require("../models/Comment")
 
 const { verifyUser } = require("../middlewares/auth")
 const { checkUserId } = require("../middlewares/protection")
+const { application } = require("express")
 
 // Créer un nouveau tweet
 app.post('/', verifyUser, checkUserId, async (req, res) => {
@@ -16,9 +18,10 @@ app.post('/', verifyUser, checkUserId, async (req, res) => {
     
     tweet.save(async (err, tweet) => {
       if (tweet) {
-        const getUser = await User.findById(user)
-        getUser.tweets.push(tweet._id)
-        getUser.save()
+        await User.updateOne(
+          { _id: user },
+          { $push: { tweets: tweet._id}}
+        )
 
         res.json(tweet)
         return
@@ -37,8 +40,15 @@ app.post('/', verifyUser, checkUserId, async (req, res) => {
 app.get('/', async (req, res) => {
   try {
     const tweets = await Tweet.find()
-      // .populate('garage')
-      .exec()
+    .populate({
+      path: 'user',
+      select: 'name username'
+    })
+    // .populate({
+    //   path : 'comments',
+    //   select: 'user text createdAt updatedAt'
+    // })
+    .exec()
 
     res.json(tweets)
   } catch (err) {
@@ -48,7 +58,7 @@ app.get('/', async (req, res) => {
 })
 
 // Supprimer un tweet d'un utilisateur
-app.delete('/:tweet_id/', verifyUser, checkUserId, async (req, res) => {
+app.delete('/:tweet_id', verifyUser, checkUserId, async (req, res) => {
   const { tweet_id } = req.params
   const { user } = req.body
 
@@ -65,16 +75,21 @@ app.delete('/:tweet_id/', verifyUser, checkUserId, async (req, res) => {
   }
 })
     
-    
-// Retweeter
+// Retweeter - remplir le tableau de retweet d'un tweet
 app.put('/:id', async (req, res) => {
   const { id } = req.params
+  const { user } = req.body
 
   try {
     const tweet = await Tweet.findOneAndUpdate(
       { _id: id },
-      { ...req.body },
+      { $push: { retweets: user } },
       { new: true }
+    ).exec()
+    
+    await User.findOneAndUpdate(
+      { _id: user },
+      { $push: { retweets: id } }
     ).exec()
 
     res.json(tweet)
@@ -83,6 +98,19 @@ app.put('/:id', async (req, res) => {
     res.status(500).json({ error: err })
   }
 })
+
+// // Afficher les commentaires d'un tweet
+// app.get('/comments/:tweet_id', async (req, res) => {
+//   const { tweet_id } = req.params
+
+//   const tweetComments = await Comment.find(
+//     { tweet: tweet_id }
+//   )
+//   // .populate('comments')
+//   .exec()
+
+//   res.json(tweetComments)
+// })
 
 
 module.exports = app
