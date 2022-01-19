@@ -3,7 +3,7 @@ const app = express()
 
 const Tweet = require("../models/Tweet")
 const User = require("../models/User")
-const Comment = require("../models/Comment")
+// const Comment = require("../models/Comment")
 
 const { verifyUser } = require("../middlewares/auth")
 const { checkUserId } = require("../middlewares/protection")
