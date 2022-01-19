@@ -1,7 +1,7 @@
 const express = require("express")
 const app = express()
 
-const Comment = require("../models/Comments")
+const Comment = require("../models/Comment")
 const User = require("../models/User")
 const Tweet = require("../models/Tweet")
 
@@ -65,5 +65,18 @@ app.delete('/:comment_id', verifyUser, checkUserId,  async (req, res) => {
         res.status(500).json({ error: err })
     }
 })
+
+// Afficher les commentaires d'un tweet
+app.get('/:tweet_id', async (req, res) => {
+    const { tweet_id } = req.params
+  
+    const tweetComments = await Comment.find(
+      { tweet: tweet_id }
+    )
+    // .populate('comments')
+    .exec()
+  
+    res.json(tweetComments)
+  })
 
 module.exports = app
