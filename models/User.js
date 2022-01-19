@@ -1,7 +1,12 @@
 const { Schema, model } = require("mongoose")
+const Tweet = require("./Tweet")
+const Comment = require("./Comment")
 
-const UserSchema = Schema({
-  name: String,
+const UserSchema = new Schema({
+  name: {
+    type: String,
+    required: true
+  },
   username: {
 		type: String,
     unique: true,
@@ -10,15 +15,19 @@ const UserSchema = Schema({
   email: {
 		type: String,
 		unique: true,
-		// required: true
+		required: true
 	},
   password: {
 		type: String,
-		required: true
+		required: true,
+    minlength: 8
 	},
+  birthday: {
+    type: Date,
+    required: true
+  },
   profilePicture: String,
   bio: String,
-  birthday: Date,
   location: String,
   website: String,
   followings: [{ type: Schema.Types.ObjectId, ref: "User" }],
@@ -28,6 +37,14 @@ const UserSchema = Schema({
   comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }]
 },{
   timestamps: true
+})
+
+// Avant de remove un user, on supprime ses tweets et ses comments aussi
+UserSchema.pre ("deleteOne", async function(next) {
+  const { _id } = this.getFilter()
+  
+  await Tweet.deleteMany({ user: _id })
+  await Comment.deleteMany({ comment: _id })
 })
 
 const User = model('User', UserSchema)
