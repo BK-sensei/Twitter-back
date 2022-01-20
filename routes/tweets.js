@@ -99,6 +99,26 @@ app.put('/:id', async (req, res) => {
   }
 })
 
+//Afficher les tweets des followers et user
+app.get("/feed", async (req, res) => {
+   
+  if (req.user) {
+      let arrayFollowing = req.user.followings.map(element => element._id.valueOf())
+      arrayFollowing = [
+          ...arrayFollowing,
+          req.user._id
+      ]
+      
+      const feed = await Tweet.find({ user: {$in : arrayFollowing }})
+        .populate('user')
+      res.json(feed)
+  } else {
+      const feed = await Tweet.find()
+        .populate('user')
+      res.json(feed)
+  }
+})
+
 // // Afficher les commentaires d'un tweet
 // app.get('/comments/:tweet_id', async (req, res) => {
 //   const { tweet_id } = req.params
