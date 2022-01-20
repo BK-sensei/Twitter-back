@@ -104,10 +104,7 @@ app.get("/feed", async (req, res) => {
    
   if (req.user) {
       let followings_id = req.user.followings.map(element => element._id.valueOf())
-      followings_id = [
-          ...followings_id,
-          req.user._id
-      ]
+      followings_id = [...followings_id, req.user._id]
       
       const feed = await Tweet.find({ user: {$in : followings_id }})
         .populate('user')
