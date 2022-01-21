@@ -14,9 +14,11 @@ app.post('/', verifyUser, checkUserId, async (req, res) => {
   const { user } = req.body
 
   try {
-    const tweet = await new Tweet({ ...req.body })
-    
-    tweet.save(async (err, tweet) => {
+    // const tweet = await new Tweet({ ...req.body })
+    let tweet = await Tweet.create({ ...req.body })
+    tweet = await tweet.populate('user')
+
+    // tweet.save(async (err, tweet) => {
       if (tweet) {
         await User.updateOne(
           { _id: user },
@@ -24,12 +26,8 @@ app.post('/', verifyUser, checkUserId, async (req, res) => {
         )
 
         res.json(tweet)
-        return
       }
-
-      console.log(err)
-      res.status(500).json({ error: err })
-    })
+    // })
   } catch (err) {
     console.log(err)
     res.status(500).json({ error: err })
