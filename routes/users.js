@@ -87,14 +87,14 @@ app.get('/:id', async (req, res) => {
 // Modifier un user : MAJ bio, pp, bday, location, follow/unfollow, website
 app.put('/:id', verifyUser, UserExist, async (req, res) => {
   const { id } = req.params
-
+  // console.log("req.body ", req.body)
   try {
     const user = await User.findOneAndUpdate(
       { _id: id },
       { ...req.body },
       { new: true }
     ).exec()
-
+    // console.log("user", user)
     res.json(user)
   } catch (err) {
     console.log(err)
