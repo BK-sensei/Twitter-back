@@ -97,6 +97,30 @@ app.put('/:id', async (req, res) => {
   }
 })
 
+// UnRetweeter - Supprimer un retweet
+app.put('/unretweet/:id', async (req, res) => {
+  const { id } = req.params
+  const { user } = req.body
+
+  try {
+    const tweet = await Tweet.findOneAndUpdate(
+      { _id: id },
+      { $pull: { retweets: user } },
+      { new: true }
+    ).exec()
+    
+    await User.findOneAndUpdate(
+      { _id: user },
+      { $pull: { retweets: id } }
+    ).exec()
+
+    res.json(tweet)
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({ error: err })
+  }
+})
+
 //Afficher les tweets des followers et user
 app.get("/feed", async (req, res) => {
    
