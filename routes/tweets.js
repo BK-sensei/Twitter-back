@@ -54,6 +54,16 @@ app.get('/', async (req, res) => {
     res.status(500).json({ error: err })
   }
 })
+// Afficher tous les retweets d'un user
+app.get('/retweets', async (req, res) => {
+
+  if (req.user) {
+    let retweets_id = req.user.retweets.map(element => element._id.valueOf())
+    
+    const retweets = await Tweet.find({ _id: {$in : retweets_id }})
+    res.json(retweets)
+  }
+})
 
 // Supprimer un tweet d'un utilisateur
 app.delete('/:tweet_id', verifyUser, checkUserId, async (req, res) => {
@@ -139,17 +149,17 @@ app.get("/feed", async (req, res) => {
 })
 
 // // Afficher les commentaires d'un tweet
-// app.get('/comments/:tweet_id', async (req, res) => {
-//   const { tweet_id } = req.params
+app.get('/comments/:tweet_id', async (req, res) => {
+  const { tweet_id } = req.params
 
-//   const tweetComments = await Comment.find(
-//     { tweet: tweet_id }
-//   )
-//   // .populate('comments')
-//   .exec()
+  const tweetComments = await Comment.find(
+    { tweet: tweet_id }
+  )
+  // .populate('comments')
+  .exec()
 
-//   res.json(tweetComments)
-// })
+  res.json(tweetComments)
+})
 
 
 module.exports = app
