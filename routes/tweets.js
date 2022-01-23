@@ -61,6 +61,7 @@ app.get('/retweets', async (req, res) => {
     let retweets_id = req.user.retweets.map(element => element._id.valueOf())
     
     const retweets = await Tweet.find({ _id: {$in : retweets_id }})
+      .populate('user')
     res.json(retweets)
   }
 })
