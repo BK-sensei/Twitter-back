@@ -54,6 +54,17 @@ app.get('/', async (req, res) => {
     res.status(500).json({ error: err })
   }
 })
+// Afficher tous les retweets d'un user
+app.get('/retweets', async (req, res) => {
+
+  if (req.user) {
+    let retweets_id = req.user.retweets.map(element => element._id.valueOf())
+    
+    const retweets = await Tweet.find({ _id: {$in : retweets_id }})
+      .populate('user')
+    res.json(retweets)
+  }
+})
 
 // Afficher un tweet
 app.get('/:tweet_id', async (req, res) => {
@@ -152,7 +163,7 @@ app.get("/feed", async (req, res) => {
   }
 })
 
-// Afficher les commentaires d'un tweet
+// // Afficher les commentaires d'un tweet
 app.get('/comments/:tweet_id', async (req, res) => {
   const { tweet_id } = req.params
 

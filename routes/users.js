@@ -67,12 +67,10 @@ app.get('/:id', async (req, res) => {
         select: 'username followers followings tweets retweets'
       })
       .populate({
-        path: 'tweets',
-        select: 'user text'
+        path: 'tweets'
       })
       .populate({
-        path: 'tweets',
-        select: 'user text'
+        path: 'retweets'
       })
       .exec()
 
