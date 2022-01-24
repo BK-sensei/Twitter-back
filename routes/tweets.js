@@ -55,6 +55,20 @@ app.get('/', async (req, res) => {
   }
 })
 
+// Afficher un tweet
+app.get('/:tweet_id', async (req, res) => {
+  const { tweet_id } = req.params
+
+  try {
+    const tweet = await Tweet.findById(tweet_id)
+
+    res.json(tweet)
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({ error : err })
+  }
+})
+
 // Supprimer un tweet d'un utilisateur
 app.delete('/:tweet_id', verifyUser, checkUserId, async (req, res) => {
   const { tweet_id } = req.params
@@ -138,18 +152,18 @@ app.get("/feed", async (req, res) => {
   }
 })
 
-// // Afficher les commentaires d'un tweet
-// app.get('/comments/:tweet_id', async (req, res) => {
-//   const { tweet_id } = req.params
+// Afficher les commentaires d'un tweet
+app.get('/comments/:tweet_id', async (req, res) => {
+  const { tweet_id } = req.params
 
-//   const tweetComments = await Comment.find(
-//     { tweet: tweet_id }
-//   )
-//   // .populate('comments')
-//   .exec()
+  const tweetComments = await Comment.find(
+    { tweet: tweet_id }
+  )
+  // .populate('comments')
+  .exec()
 
-//   res.json(tweetComments)
-// })
+  res.json(tweetComments)
+})
 
 
 module.exports = app
